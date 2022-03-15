@@ -46,10 +46,7 @@ module ViewComponent
         private
 
         def validate_slot_method_args
-          return if slot_method_args.valid?
-
-          slot_method_args_errors = slot_method_args.errors.full_messages.join(', ')
-          errors.add(:slot_method_args, :invalid, errors: slot_method_args_errors)
+          true
         end
 
         def self.slot_method_args(component_class, slot_name, *args, **kwargs)
