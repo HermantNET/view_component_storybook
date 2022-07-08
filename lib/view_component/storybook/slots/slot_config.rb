@@ -46,7 +46,10 @@ module ViewComponent
         private
 
         def validate_slot_method_args
-          true
+          return if slot_method_args.valid?
+
+          slot_method_args_errors = slot_method_args.errors.full_messages.join(', ')
+          errors.add(:slot_method_args, :invalid, errors: slot_method_args_errors)
         end
 
         def self.slot_method_args(component_class, slot_name, *args, **kwargs)
@@ -54,9 +57,9 @@ module ViewComponent
           # The slot methods themselves just have rest params so we can't introspect them. Instead we
           # look for 'renderable' details of the registered slot
           # This approach is tightly coupled to internal ViewCopmonent apis and might prove to be brittle
-          registred_slot_name = component_class.slot_type(slot_name) == :collection_item ? ActiveSupport::Inflector.pluralize(slot_name).to_sym : slot_name
-
-          registered_slot = component_class.registered_slots[registred_slot_name]
+          registered_slot_name = component_class.slot_type(slot_name) == :collection_item ? ActiveSupport::Inflector.pluralize(slot_name).to_sym : slot_name
+          
+          registered_slot = component_class.registered_slots[registered_slot_name]
 
           if registered_slot[:renderable] || registered_slot[:renderable_class_name]
             # The slot is a component - either a class or a string representing the class

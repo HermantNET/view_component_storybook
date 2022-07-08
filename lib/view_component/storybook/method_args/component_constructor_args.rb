@@ -9,6 +9,10 @@ module ViewComponent
         def self.from_component_class(component_class, *args, **kwargs)
           if DryInitializerComponentConstructorArgs.dry_initialize?(component_class)
             DryInitializerComponentConstructorArgs.new(component_class, *args, **kwargs)
+          elsif args.present?
+            # TODO: Fix collections 
+            # ! WARNING: This is a hack to allow collections to work
+            new(component_class)
           else
             new(component_class, *args, **kwargs)
           end
